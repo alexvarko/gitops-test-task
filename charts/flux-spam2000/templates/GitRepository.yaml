@@ -1,0 +1,12 @@
+{{ if .Values.gitRepository.enabled }}
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: {{ .Values.gitRepository.name }}
+  namespace: flux-system
+spec:
+  interval: {{ .Values.gitRepository.interval | default "5m0s" }}
+  url: {{ .Values.gitRepository.url }}
+  ref:
+    branch: {{ .Values.gitRepository.branch | default "main" }}
+{{ end }}

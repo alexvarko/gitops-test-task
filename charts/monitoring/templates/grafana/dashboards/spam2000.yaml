@@ -1,0 +1,159 @@
+{{- if and .Values.externalDashboards.enabled .Values.externalDashboards.dashboards.spam2000.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    grafana_dashboard: "1"
+  name: spam2000-dashboard
+data:
+  spam2000-dashboard.json: |
+    {
+      "title": "Spam2000 Dashboard",
+      "uid": "spam2000_dashboard",
+      "timezone": "browser",
+      "schemaVersion": 38,
+      "time": {
+        "from": "now-15m",
+        "to": "now"
+      },
+      "panels": [
+        {
+          "title": "Top Country (Gauge 1)",
+          "type": "stat",
+          "gridPos": { "h": 5, "w": 8, "x": 0, "y": 0 },
+          "datasource": "VictoriaMetrics",
+          "targets": [{ 
+            "expr": "topk_last(1, sum(random_gauge_1) by (country))", 
+            "legendFormat": "{{ "{{" }}country{{ "}}" }}",
+            "instant": true 
+          }],
+          "options": { 
+            "colorMode": "background", 
+            "graphMode": "none", 
+            "textMode": "name_and_value",
+            "justifyMode": "center"
+          }
+        },
+        {
+          "title": "Top Country (Gauge 2)",
+          "type": "stat",
+          "gridPos": { "h": 5, "w": 8, "x": 8, "y": 0 },
+          "datasource": "VictoriaMetrics",
+          "targets": [{ 
+            "expr": "topk_last(1, sum(random_gauge_2) by (country))", 
+            "legendFormat": "{{ "{{" }}country{{ "}}" }}",
+            "instant": true 
+          }],
+          "options": { 
+            "colorMode": "background", 
+            "graphMode": "none", 
+            "textMode": "name_and_value",
+            "justifyMode": "center"
+          }
+        },
+        {
+          "title": "Top Country (Gauge 3)",
+          "type": "stat",
+          "gridPos": { "h": 5, "w": 8, "x": 16, "y": 0 },
+          "datasource": "VictoriaMetrics",
+          "targets": [{ 
+            "expr": "topk_last(1, sum(random_gauge_3) by (country))", 
+            "legendFormat": "{{ "{{" }}country{{ "}}" }}",
+            "instant": true 
+          }],
+          "options": { 
+            "colorMode": "background", 
+            "graphMode": "none", 
+            "textMode": "name_and_value",
+            "justifyMode": "center"
+          }
+        },
+        {
+          "title": "Top 5 Names (Gauge 1)",
+          "type": "bargauge",
+          "gridPos": { "h": 6, "w": 8, "x": 0, "y": 5 },
+          "datasource": "VictoriaMetrics",
+          "targets": [{ 
+            "expr": "topk_last(5, sum(random_gauge_1) by (name))", 
+            "legendFormat": "{{ "{{" }}name{{ "}}" }}",
+            "instant": true
+          }],
+          "options": { "displayMode": "lcd", "orientation": "horizontal" }
+        },
+        {
+          "title": "Top 5 Names (Gauge 2)",
+          "type": "bargauge",
+          "gridPos": { "h": 6, "w": 8, "x": 8, "y": 5 },
+          "datasource": "VictoriaMetrics",
+          "targets": [{ 
+            "expr": "topk_last(5, sum(random_gauge_2) by (name))", 
+            "legendFormat": "{{ "{{" }}name{{ "}}" }}",
+            "instant": true
+          }],
+          "options": { "displayMode": "lcd", "orientation": "horizontal" }
+        },
+        {
+          "title": "Top 5 Names (Gauge 3)",
+          "type": "bargauge",
+          "gridPos": { "h": 6, "w": 8, "x": 16, "y": 5 },
+          "datasource": "VictoriaMetrics",
+          "targets": [{ 
+            "expr": "topk_last(5, sum(random_gauge_3) by (name))", 
+            "legendFormat": "{{ "{{" }}name{{ "}}" }}",
+            "instant": true
+          }],
+          "options": { "displayMode": "lcd", "orientation": "horizontal" }
+        },
+        {
+          "title": "Self-Scaling Geographic Distribution (Gauge 1)",
+          "type": "geomap",
+          "gridPos": { "h": 12, "w": 24, "x": 0, "y": 11 },
+          "datasource": "VictoriaMetrics",
+          "targets": [
+            { 
+              "expr": "sum(random_gauge_1) by (country)", 
+              "refId": "A", 
+              "instant": true,
+              "format": "table" 
+            }
+          ],
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": { "keepLabels": ["country"] }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "color": { "mode": "thresholds" },
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  { "color": "blue", "value": 0 },
+                  { "color": "yellow", "value": 33 },
+                  { "color": "orange", "value": 66 },
+                  { "color": "red", "value": 90 }
+                ]
+              }
+            }
+          },
+          "options": {
+            "view": { "id": "world", "lat": 0, "lon": 0, "zoom": 1 },
+            "layers": [
+              {
+                "type": "markers",
+                "name": "Users",
+                "config": { 
+                  "style": { 
+                    "size": { "field": "Value", "min": 5, "max": 25 },
+                    "color": { "field": "Value" } 
+                  } 
+                },
+                "location": { "mode": "lookup", "lookupField": "country" }
+              }
+            ]
+          }
+        }
+      ]
+    }
+{{- end }}

@@ -1,0 +1,20 @@
+{{ if .Values.helmChart.enabled }}
+{{- range .Values.helmChart.charts }}
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: {{ .name }}
+  namespace: flux-system
+spec:
+  interval: {{ .interval | default "5m0s" }}
+  chart: {{ .chart }}
+  reconcileStrategy: {{ .reconcileStrategy | default "ChartVersion" }}
+  sourceRef:
+    kind: GitRepository
+    name: {{ $.Values.gitRepository.name }}
+  {{ if .version }}
+  version: {{ .version | default "*" }}
+  {{ end }}
+{{ end }}
+{{ end }}

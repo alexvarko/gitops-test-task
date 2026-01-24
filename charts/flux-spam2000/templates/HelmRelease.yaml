@@ -1,0 +1,30 @@
+{{ if .Values.helmRelease.enabled }}
+{{- range .Values.helmRelease.releases }}
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ .name }}
+  namespace: flux-system
+spec:
+  interval: {{ .interval | default "5m0s" }}
+  chartRef:
+    kind: HelmChart
+    name: {{ .chartRef.name }}
+    namespace: flux-system
+  releaseName: {{ .releaseName }}
+  targetNamespace: {{ .targetNamespace }}
+  install:
+    createNamespace: {{ .install.createNamespace | default false }}  
+  {{- if .dependsOn}}
+  dependsOn:
+    {{- toYaml .dependsOn | nindent 6 }}
+  {{- end }}
+  driftDetection:
+    mode: {{ .driftDetection.mode | default "warn" }}
+    {{- if .driftDetection.ignore }}
+    ignore:
+      {{- toYaml .driftDetection.ignore | nindent 6 }}
+    {{- end }}
+{{ end }}
+{{ end }}

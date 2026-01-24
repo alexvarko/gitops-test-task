@@ -1,0 +1,6 @@
+apiVersion: v2
+name: flux-spam2000
+description: A Helm chart for flux resources
+type: application
+
+version: 0.1.0

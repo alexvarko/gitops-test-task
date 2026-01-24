@@ -1,0 +1,108 @@
+victoria-metrics-k8s-stack:
+  enabled: true
+  fullnameOverride: "vm"
+  victoria-metrics-operator:
+    crds:
+      plain: true
+  alertmanager:
+    enabled: false
+  vmalert:
+    enabled: false
+  grafana:  
+    plugins:
+    - victoriametrics-logs-datasource
+  defaultDatasources:
+    extra:
+      - name: VictoriaLogs
+        type: victoriametrics-logs-datasource
+        url: http://victoria-logs:9428
+        access: proxy
+        version: 1
+
+  defaultDashboards:
+    dashboards:
+      alertmanager-overview:
+        enabled: false
+      etcd:
+        enabled: false
+      grafana-overview:
+        enabled: false
+      kubernetes-controller-manager:
+        enabled: false
+      kubernetes-kubelet:
+        enabled: false
+      kubernetes-proxy:
+        enabled: false
+      kubernetes-scheduler:
+        enabled: false
+      kubernetes-system-api-server:
+        enabled: false
+      kubernetes-system-coredns:
+        enabled: false
+      kubernetes-views-global:
+        enabled: true
+      kubernetes-views-namespaces:
+        enabled: true
+      kubernetes-views-nodes:
+        enabled: true
+      kubernetes-views-pods:
+        enabled: true
+      node-exporter-full:
+        enabled: true
+      victoriametrics-backupmanager:
+        enabled: false
+      victoriametrics-cluster:
+        enabled: false
+      victoriametrics-operator:
+        enabled: false
+      victoriametrics-single-node:
+        enabled: false
+      victoriametrics-vmagent:
+        enabled: false
+      victoriametrics-vmalert:
+        enabled: false
+  defaultRules:
+    create: false
+
+  vmagent:
+    spec:
+      inlineScrapeConfig: |
+        - job_name: 'spam2000'
+          scrape_interval: 15s
+          max_scrape_size: 67108864
+          static_configs:
+              - targets:
+                  - 'spam2000.apps.svc.cluster.local:3000' 
+
+  vmsingle:
+    spec:
+      resources:
+        limits:
+          memory: 3Gi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+
+victoria-logs-single:
+  enabled: true
+  server:
+    fullnameOverride: "victoria-logs"
+    retentionPeriod: 7d
+    persistentVolume:
+      size: 10Gi
+
+victoria-logs-collector:
+  enabled: true
+  remoteWrite:
+    - url: http://victoria-logs:9428
+
+
+externalDashboards:
+  enabled: true
+  dashboards:
+    logs:
+      enabled: true
+    spam2000:
+      enabled: true
+

@@ -1,0 +1,43 @@
+gitRepository:
+  enabled: true
+  name: gitops-test-task
+  url: https://github.com/alexvarko/gitops-test-task.git
+  branch: main
+
+helmChart: 
+  enabled: true
+  charts:
+    - name: spam2000
+      chart: charts/spam2000
+      interval: 5m0s
+      reconcileStrategy: Revision  
+    - name: monitoring
+      chart: charts/monitoring
+      interval: 5m0s
+      reconcileStrategy: Revision
+
+helmRelease:
+  enabled: true
+  releases:
+    - name: spam2000
+      chartRef:
+        name: spam2000
+      releaseName: spam2000
+      targetNamespace: apps
+      install:
+        createNamespace: true
+      interval: 5m0s
+      driftDetection:
+        mode: enabled
+    - name: monitoring
+      chartRef:
+        name: monitoring
+      releaseName: monitoring
+      targetNamespace: monitoring
+      install:
+        createNamespace: true
+      dependsOn:
+        - name: spam2000
+      interval: 5m0s
+      driftDetection:
+        mode: enabled
