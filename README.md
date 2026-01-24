@@ -49,9 +49,22 @@
 
 
 ## Дашборди Grafana
+  -  Kubernetes / Views / Global
+  -  Kubernetes / Views / Namespaces
+  -  Kubernetes / Views / Nodes
+  -  Kubernetes / Views / Pods
+  -  Logs
+  -  Node Exporter Full
+  -  Spam2000 Dashboard
 
 ### Spam200 Dashboard
 ![Spam200 Dashboard](images/spam2000-dashboard.png)
 
 ### Logs Dashboard
 ![Logs Dashboard](images/logs-dashboard.png)
+
+### Kubernetes/Views/Global Dashboard
+![Global Dashboard](images/global-dashboard.png)
+
+### Kubernetes/Views/Nodes Dashboard
+![Nodes Dashboard](images/nodes-dashboard.png)
